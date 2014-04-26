@@ -12,8 +12,6 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-#include <errno.h> // obligatoire pour que ça fonctionne ....
-
 #include "benchmark.h"
 #include "copy.h"
 
