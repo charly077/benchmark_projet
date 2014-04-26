@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
 		char fichier[255];
 		char name[]= "repertoire/Fichier";
 		FILE *f;
-		for(i=0;i<10;i++){
+		for(i=0;i<N;i++){
 
 			sprintf((char *) &fichier, "%s%i.txt",name,i);
 		

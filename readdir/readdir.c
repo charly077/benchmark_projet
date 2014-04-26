@@ -30,14 +30,14 @@ int main(int argc, char *argv[]){
 	//maintenant qu'on a ouvert le répertoire, il faut créer des fichier
 	//de la même taille
 	
-	//ex pour 10 100 1000 10 000 100 000 10000000 fichiers
+	//ex pour 10 100 1000 10 000 100 000 fichiers
 	int N;
-	for(N=10;N<10000000;N=10*N){
+	for(N=10;N<1000000;N=10*N){
 		int i;
 		char fichier[255];
 		char name[]= "repertoire/Fichier";
 		FILE *f;
-		for(i=0;i<10;i++){
+		for(i=0;i<N;i++){
 
 			sprintf((char *) &fichier, "%s%i.txt",name,i);
 		
