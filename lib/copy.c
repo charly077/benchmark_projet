@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <errno.h> // on a été obligé de le rajouter pour que ça compile ....
 
 #include "benchmark.h"
 #include "copy.h"
