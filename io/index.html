@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>io</title>
+  </head>
+  <body>
+  <h1>Benchmark "io"</h1>
+  <h2>Introduction</h2>
+<p>
+Comparaison entre les appels systèmes <code>write</code>/<code>read</code> et
+les fonctions de <code>stdio</code> <code>fputs</code>/<code>fgets</code>.
+La comparaison se fait avec la copie d'un fichier
+(équivalent de la fonction <code>cp</code>)
+L'utilisation des appels systèmes est indiqué par <code>sys</code> dans
+le nom de la courbe et celui des fonctions de <code>stdio</code>
+est indiqué par <code>std</code>.
+</p>
+<ul>
+  <li><code>sys_sync</code> donne l'argument <code>O_SYNC</code> à
+  <code>open</code>;</li>
+  <li><code>sys_nosync</code> ne le donne pas;</li>
+  <li><code>sys_direct</code> donne l'argument <code>O_SYNC</code> et
+  <code>O_DIRECT</code> à <code>open</code>;</li>
+  <li><code>std_buf</code> donne un buffer à <code>stdio</code>
+  (bien qu'il en a déjà un par défaut, ainsi on peut controller sa taille);
+  </li>
+  <li><code>std_buf</code> demande à <code>stdio</code> de ne pas en utiliser.
+  </li>
+</ul>
+<h3>Conseils</h3>
+<p>
+Remarquez bien qu'on est en échelle <em>logarithmique</em> pour les deux axes
+</p>
+<p>
+Essayez de changer les constantes <code>SIZE</code> et <code>BUF_SIZE</code>
+et observez leur effet.
+</p>
+</body>
+<h2>Résultat du benchmark</h2>
+<img src="io.png" alt="Résultats du benchmark de io" />
+<h2>Perf results</h2>
+<h3>Introduction</h3>
+Voici l'output de <code>perf</code> avec la méthode indiquée
+et une taille de block par appel de <code>512 B</code>.
+<h3>Résultats</h3>
+<h4>sys_sync</h4>
+<p><pre>
+# started on Sat Apr 26 07:42:07 2014
+
+
+ Performance counter stats for './io --sys_sync':
+
+         33.860242 task-clock (msec)         #    0.094 CPUs utilized          
+             1,033 context-switches          #    0.031 M/sec                  
+               213 cpu-migrations            #    0.006 M/sec                  
+               151 page-faults               #    0.004 M/sec                  
+   <not supported> cycles                  
+   <not supported> stalled-cycles-frontend 
+   <not supported> stalled-cycles-backend  
+   <not supported> instructions            
+   <not supported> branches                
+   <not supported> branch-misses           
+
+       0.361807284 seconds time elapsed
+
+</pre></p>
+<h4>sys_nosync</h4>
+<p><pre>
+# started on Sat Apr 26 07:42:07 2014
+
+
+ Performance counter stats for './io --sys_nosync':
+
+          2.693032 task-clock (msec)         #    0.421 CPUs utilized          
+                 8 context-switches          #    0.003 M/sec                  
+                 0 cpu-migrations            #    0.000 K/sec                  
+               151 page-faults               #    0.056 M/sec                  
+   <not supported> cycles                  
+   <not supported> stalled-cycles-frontend 
+   <not supported> stalled-cycles-backend  
+   <not supported> instructions            
+   <not supported> branches                
+   <not supported> branch-misses           
+
+       0.006394847 seconds time elapsed
+
+</pre></p>
+<h4>sys_direct</h4>
+<p><pre>
+# started on Sat Apr 26 07:42:07 2014
+
+
+ Performance counter stats for './io --sys_direct':
+
+         54.781048 task-clock (msec)         #    0.133 CPUs utilized          
+             1,513 context-switches          #    0.028 M/sec                  
+               119 cpu-migrations            #    0.002 M/sec                  
+               154 page-faults               #    0.003 M/sec                  
+   <not supported> cycles                  
+   <not supported> stalled-cycles-frontend 
+   <not supported> stalled-cycles-backend  
+   <not supported> instructions            
+   <not supported> branches                
+   <not supported> branch-misses           
+
+       0.410939636 seconds time elapsed
+
+</pre></p>
+<h4>std_buf</h4>
+<p><pre>
+# started on Sat Apr 26 07:42:08 2014
+
+
+ Performance counter stats for './io --std_buf':
+
+          1.556226 task-clock (msec)         #    0.289 CPUs utilized          
+                 9 context-switches          #    0.006 M/sec                  
+                 1 cpu-migrations            #    0.643 K/sec                  
+               189 page-faults               #    0.121 M/sec                  
+   <not supported> cycles                  
+   <not supported> stalled-cycles-frontend 
+   <not supported> stalled-cycles-backend  
+   <not supported> instructions            
+   <not supported> branches                
+   <not supported> branch-misses           
+
+       0.005383838 seconds time elapsed
+
+</pre></p>
+<h4>std_nobuf</h4>
+<p><pre>
+# started on Sat Apr 26 07:42:08 2014
+
+
+ Performance counter stats for './io --std_nobuf':
+
+        183.673831 task-clock (msec)         #    0.933 CPUs utilized          
+                14 context-switches          #    0.076 K/sec                  
+                 2 cpu-migrations            #    0.011 K/sec                  
+               156 page-faults               #    0.849 K/sec                  
+   <not supported> cycles                  
+   <not supported> stalled-cycles-frontend 
+   <not supported> stalled-cycles-backend  
+   <not supported> instructions            
+   <not supported> branches                
+   <not supported> branch-misses           
+
+       0.196933086 seconds time elapsed
+
+</pre></p>
+</html>

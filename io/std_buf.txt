@@ -1,0 +1,18 @@
+# started on Sat Apr 26 07:42:08 2014
+
+
+ Performance counter stats for './io --std_buf':
+
+          1.556226 task-clock (msec)         #    0.289 CPUs utilized          
+                 9 context-switches          #    0.006 M/sec                  
+                 1 cpu-migrations            #    0.643 K/sec                  
+               189 page-faults               #    0.121 M/sec                  
+   <not supported> cycles                  
+   <not supported> stalled-cycles-frontend 
+   <not supported> stalled-cycles-backend  
+   <not supported> instructions            
+   <not supported> branches                
+   <not supported> branch-misses           
+
+       0.005383838 seconds time elapsed
+

@@ -1,0 +1,1 @@
+PATH=~/src/gnuplot-4.6.5/src:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/texbin ./bootstrap.sh
