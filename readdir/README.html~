@@ -1,10 +1,8 @@
 <p>
-Explication de ce que nous allons faire ;) 
-Pour le moment j'ai utilisé un BM_USE_CLOCK_GETTIME parce qu'il a l'air plus précis
-</p>
-<p>
-J'essaie d'ajouter plusieurs graphiques.... (avec le temps total)
+Nous avons utilisé BM_USE_CLOCK_GETTIME parce que celui-ci semble plus précis mais nous devons encore comprendre quelles sont les différences exactes.
 </p>
 <p> 
-<b>ATTENTION IL FAUT COMPRENDRE TOUTES LES BALISE .. JE VAIS T'EXPLIQUER TOUS CE QU'IL FAUT MODIF POUR FONCTIONNE ... </b>
+Tout d'abord, nous nous sommes demandé si readdir était plus lent si les fichiers étaient
+remplis ou pas. C'est pourquoi nous avons choisi d'implémenter deux tests. Le premier 
+calcul le temps que met readdir pour prendre la structure d'un seul élement lorsqu'il y en a 10, 100, 1000 ... Ensuite le second fait la même chose à la différence que nous remplissons les fichiers pour qu'ils aient une taille de <b>?????????????????</b>byte.
 </p>

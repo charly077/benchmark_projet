@@ -32,10 +32,14 @@ void rand_str(char *dest, int length) {
 
 
 int main(int argc, char *argv[]){
+	//création du répertoire :
+	if(mkdir("./repertoire",S_IRWXU)){
+		perror("rmdir");
+	}
 	//création des variable de calcul benchmark:
 	timer *t = timer_alloc();
 	recorder *record = recorder_alloc("readdir.csv");
-	//recorder *recordTot = recorder_alloc("readdirtot.csv");
+	recorder *record2 = recorder_alloc("readdirfull.csv");
 
 	// !!! Variables à changer
 	int longueurChaineGene = 10000;
@@ -58,13 +62,13 @@ int main(int argc, char *argv[]){
 	char name[255]; //= strcat(cheminDuDossier, "fichier");
 	sprintf((char *) &name, "%s%s",cheminDuDossier,"/fichier");
 	FILE *f;
-
+	int i;
 	// -----------------------------------------------------------------------------------------
 
 	printf("On commence avec les fichiers vides \n");
 
 	for(N=10;N<=nombreDeFichierMaxCree;N=10*N){
-		int i;
+		
 
 		// On crée tous les fichiers dans un dossier
 		for(i=0;i<N;i++){
@@ -96,6 +100,15 @@ int main(int argc, char *argv[]){
 		printf("test fini pour N=%d\n",N);
 	}
 
+	//supression de tous les fichiers:
+
+	for(i=0;i<N;i++){
+
+		sprintf((char *) &fichier, "%s%i.txt",name,i);
+		
+		if(remove(fichier));
+	}
+
 	printf("Fini les fichiers vides \n");
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -103,10 +116,10 @@ int main(int argc, char *argv[]){
 	printf("On commence avec les fichiers remplis \n");
 
 	//timer *t2 = timer_alloc();
-	recorder *record2 = recorder_alloc("readdirfull.csv");
+	
 	char buf[longueurChaineGene]; // Chaine à placer dans le fichier
 
-	for(N=10;N<nombreDeFichierMaxCree;N=10*N){
+	for(N=10;N<=nombreDeFichierMaxCree;N=10*N){
 		int i;
 
 		for(i=0;i<N;i++){
@@ -139,10 +152,22 @@ int main(int argc, char *argv[]){
 		write_record_n(record2,N,stop_timer(t),N);
 		printf("test fini pour N=%d\n",N);
 	}
+	//supression de tous les fichiers:
+
+	for(i=0;i<N;i++){
+
+		sprintf((char *) &fichier, "%s%i.txt",name,i);
+		
+		if(remove(fichier));
+	}
 
 	if(closedir(rep) == -1)
 	{
 		return -1; // EXIT_FAILURE
+	}
+	//suppression du répertoire (vide):
+	if(rmdir("./repertoire")){
+		perror("rmdir");
 	}
 
 	recorder_free(record);
