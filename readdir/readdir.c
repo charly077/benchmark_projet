@@ -20,7 +20,8 @@ int main(int argc, char *argv[]){
 	//création des variable de calcul benchmark:
 	timer *t = timer_alloc();
 	recorder *record = recorder_alloc("readdir.csv");
-	
+	recorder *recordTot = recorder_alloc("readdirTot.csv");
+
 	//ouvrir un document 
 	DIR *rep = NULL;
 	rep = opendir("repertoire");
@@ -58,9 +59,11 @@ int main(int argc, char *argv[]){
 		//j'utilise le record_n parce qu'il faut diviser par le nombre d'de fichier parce que qui est
 		//interessant c'est le temps par fichier
 		write_record_n(record,N,stop_timer(t),N);
+		write_record(recordTot, N, stop_timer(t));
 		printf("test fini pour N=%d\n",N);
 	}
 	recorder_free(record);
+	recorder_free(recordTot);
 	timer_free(t);
 	return 0;
 }

@@ -3,4 +3,5 @@ set xlabel 'nombre de fichiers'
 set ylabel 'time [ns]'
 set key right bottom
 set logscale x
-plot 'readdir.csv' using 1:2 title 'readdir'
+plot 'readdir.csv' using 1:2 title 'readdir',\
+   'readdirtot.csv' using 1:2 title 'readdir_Tot'
