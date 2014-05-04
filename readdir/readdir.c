@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
 			
 			rand_str(buf, longueurChaineGene);
 			
-			fprintf(fp, "%s", buf);
+			fprintf(f, "%s", buf);
 
 			if(fclose(f))
 			{
