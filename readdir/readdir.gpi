@@ -4,4 +4,4 @@ set ylabel 'time [ns]'
 set key right bottom
 set logscale x
 plot 'readdir.csv' using 1:2 title 'readdir',\
-   'readdirfull.csv' using 1:2 title 'readdir_full'
+   'readdirfull.csv' using 1:2 title 'readdir\_full'
