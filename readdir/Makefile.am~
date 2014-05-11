@@ -4,6 +4,6 @@ readdir_SOURCES = readdir.c
 readdir_LDADD = $(top_builddir)/lib/libbenchmark.a $(AM_LDFLAGS)
 
 PROG   = readdir
-GRAPHS = readdir.csv readdirtot.csv
+GRAPHS = readdir.csv readdirfull.csv
 
 include ../lib/lib.mk
