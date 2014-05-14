@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 		// !!! Variables à changer
 	int longFichierAlloue = 10000;
 	char* nameDossier = "repertoire";
-	int nombreDeFichierMaxCree = 50000;
+	int nombreDeFichierMaxCree = 80000;
 
 	//création du répertoire :
 	if(mkdir("repertoire",S_IRWXU)){ // ! j'ai changé de './repertoire'
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 
 	printf("On commence avec les fichiers vides \n");
 
-	for(N=10;N<=nombreDeFichierMaxCree;N=5*N)
+	for(N=1;N<=nombreDeFichierMaxCree;N=N+2)
 	{
 		
 		// On crée tous les fichiers dans un dossier
@@ -83,16 +83,6 @@ int main(int argc, char *argv[]){
 		
 			// On n'utilise pas la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
 			create_file(nameFichierFinal, 0);
-			/*
-			f = fopen(nameFichierFinal,"w");
-			if (f == NULL){
-				perror("problème lors de l'ouverture du fichier");
-			}
-			else{
-				if(fclose(f))
-					perror("problème lors de la fermeture d'un fichier");
-			}
-			*/
 
 		}
 		// Une fois qu'ils sont créés, on rebobine
@@ -108,15 +98,13 @@ int main(int argc, char *argv[]){
 		//interessant c'est le temps par fichier
 		write_record_n(record,N,stop_timer(t),N);
 
-		//supression de tous les fichiers:
-
+		//supression de tous les fichiers créés pour ce nombre de FichierCréé
 		for(i=0;i<N;i++){
 
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
 			// On supprime les fichiers, avec la fonction fournie dans le 'copy.h' -> n'arrive pas à l'importer...
 			 rm(nameFichierFinal); 	
-			//if(remove(nameFichierFinal));
 		}
 
 		printf("test fini pour N=%d\n",N);
@@ -130,30 +118,17 @@ int main(int argc, char *argv[]){
 	printf("On commence avec les fichiers remplis \n");
 	char buf[longFichierAlloue];
 
-	for(N=10;N<=nombreDeFichierMaxCree;N=5*N){
+	for(N=1;N<=nombreDeFichierMaxCree;N=N+2){
 		int i;
 
+		// On crée les N fichiers
 		for(i=0;i<N;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
 			// On crée un fichier avec la méthode de copy.c qui le remplit directement -> n'arrive pas à l'importer...
-			//create_file(nameFichierFinal, longFichierAlloue);
+			create_file(nameFichierFinal, longFichierAlloue);
 
-			 // Méthode de réserve
-			f = fopen(nameFichierFinal, "w");
-			if (f == NULL)
-			{
-				printf("Le fichier %i ne peut pas être créé \n", i);
-			}
-			
-			chaineCaractere(buf, longFichierAlloue);
-			fprintf(f, "%s", buf);
-
-			if(fclose(f)){
-					perror("problème lors de la fermeture d'un fichier");
-			}
-			
 		}
 
 		rewinddir(rep);
@@ -165,6 +140,7 @@ int main(int argc, char *argv[]){
 		{
 			//printf("Le fichier lu s'appelle '%s'\n", fichierLu->d_name);
 		}
+
 		//j'utilise le record_n parce qu'il faut diviser par le nombre d'de fichier parce que qui est
 		//interessant c'est le temps par fichier
 		write_record_n(record2,N,stop_timer(t),N);
@@ -176,11 +152,9 @@ int main(int argc, char *argv[]){
 			
 			// On supprime le fichier avec la méthode de copy.c -> ne fonctionne pas, n'arrive pas à l'importer...
 			rm(nameFichierFinal);
-
-			//if (remove(nameFichierFinal));
 		}
 
-		printf("test full fini pour N=%d\n",N);
+		printf("Test full fini pour N=%d\n",N);
 	}
 
 	if(closedir(rep) == -1)
