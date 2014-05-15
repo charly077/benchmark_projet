@@ -17,7 +17,7 @@ Le but de se programme est de comparer la vitess de write/lseek par rapport à w
 
 */
 
-#define NOMBRE_BUFFER_MAX 1000
+#define NOMBRE_BUFFER_MAX 500
 
 int main(int argc, char *argv[]){
 	//création d'un buffer de taille fixe à écrire

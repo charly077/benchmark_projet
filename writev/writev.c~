@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
 	//int iovcnt;
 	for(i=1;i<NOMBRE_BUFFER_MAX;i++){ // il faut commencer à 2 
 		//writev (écrit à chaque fois au début du fichier)
-		if(lseek(fd2,0,SEEK_SET))
+		if(lseek(fd2,0,SEEK_SET)==-1)
 			perror("lseek");
 		start_timer(t);
 		struct iovec iov[i];
@@ -54,11 +54,11 @@ int main(int argc, char *argv[]){
 		write_record(writev_rec, i, stop_timer(t));
 		// write/lseek à chaque fois il faut revenir à 0
 
-		if(lseek(fd2,0,SEEK_SET))
+		if(lseek(fd2,0,SEEK_SET)==-1)
 			perror("lseek");
 		start_timer(t);
 		for(j=0;j<i;j++){
-			if(lseek(fd2,i*section_len,SEEK_SET))
+			if(lseek(fd2,i*section_len,SEEK_SET)==-1)
 				perror("lseek");
 			if(write(fd2,buf,buf_len)==-1)
 				perror("write");
