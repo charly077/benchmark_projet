@@ -73,11 +73,11 @@ int main(int argc, char *argv[]){
 
 	printf("On commence avec les fichiers vides \n");
 
-	for(N=1;N<=nombreDeFichierMaxCree;N=N+2)
+	for(N=1;N<=nombreDeFichierMaxCree;N=N+500)
 	{
 		
 		// On crée tous les fichiers dans un dossier
-		for(i=0;i<N;i++){
+		for(i=N-500;i<N;i++){
 
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
@@ -99,6 +99,7 @@ int main(int argc, char *argv[]){
 		write_record_n(record,N,stop_timer(t),N);
 
 		//supression de tous les fichiers créés pour ce nombre de FichierCréé
+		/*
 		for(i=0;i<N;i++){
 
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
@@ -106,7 +107,7 @@ int main(int argc, char *argv[]){
 			// On supprime les fichiers, avec la fonction fournie dans le 'copy.h' -> n'arrive pas à l'importer...
 			 rm(nameFichierFinal); 	
 		}
-
+		*/
 		printf("test fini pour N=%d\n",N);
 	}
 
@@ -118,11 +119,11 @@ int main(int argc, char *argv[]){
 	printf("On commence avec les fichiers remplis \n");
 	char buf[longFichierAlloue];
 
-	for(N=1;N<=nombreDeFichierMaxCree;N=N+2){
+	for(N=1;N<=nombreDeFichierMaxCree;N=N+500){
 		int i;
 
 		// On crée les N fichiers
-		for(i=0;i<N;i++)
+		for(i=N-500;i<N;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
@@ -146,6 +147,7 @@ int main(int argc, char *argv[]){
 		write_record_n(record2,N,stop_timer(t),N);
 
 		//supression de tous les fichiers:
+		/*
 		for(i=0;i<N;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
@@ -153,9 +155,18 @@ int main(int argc, char *argv[]){
 			// On supprime le fichier avec la méthode de copy.c -> ne fonctionne pas, n'arrive pas à l'importer...
 			rm(nameFichierFinal);
 		}
-
+		*/
 		printf("Test full fini pour N=%d\n",N);
 	}
+
+	// Effacement de tous les fichiers
+	for(i=0;i<N;i++)
+		{
+			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
+			
+			// On supprime le fichier avec la méthode de copy.c -> ne fonctionne pas, n'arrive pas à l'importer...
+			rm(nameFichierFinal);
+		}
 
 	if(closedir(rep) == -1)
 	{
