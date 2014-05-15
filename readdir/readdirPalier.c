@@ -20,9 +20,9 @@
 #include "benchmark.h"
 #include "copy.h"
 
-#define NOMBREDEFICHIERMAX 10000
-#define STEPNUMBERFILES 5
-#define LONGUEURFICHIERALLOUE 1500
+#define NOMBREDEFICHIERMAX 250
+#define STEPNUMBERFILES 2
+#define LONGUEURFICHIERALLOUE 10000
 
 void chaineCaractere(char* file, int longueur)
 {
@@ -58,21 +58,51 @@ int main(int argc, char *argv[]){
 	if(rep == NULL){
 		perror("Problème lors de l'ouverture du fichier");
 	}
-
-	struct dirent* fichierLu = NULL; 
 	//maintenant qu'on a ouvert le répertoire, il faut créer des fichier
 	//de la même taille
 	//ex pour 10 100 1000 10 000 100 000 fichiers
-	int N;
+
+	
+
+	// Génère la racine commune des noms de fichiers
 	char nameFichierFinal[255];
 	char namePrevFichier[255];
 	sprintf((char *) &namePrevFichier, "%s%s",nameDossier,"/fichier");
-	FILE *f;
+	
+	//FILE *f;
+	struct dirent* fichierLu = NULL; 
+	int N;
 	int i;
 	// -----------------------------------------------------------------------------------------
 
 	printf("On commence avec les fichiers vides \n");
 
+	// On crée tous les fichiers dans un dossier
+		for(i=1;i<NOMBREDEFICHIERMAX;i++){
+
+			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
+		
+			// On n'utilise la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
+			create_file(nameFichierFinal, 0);
+			
+			//fprintf(nameFichierFinal, buf, sizeof (buf));
+		}
+
+		rewinddir(rep);
+		int j;
+		j= 0;
+		start_timer(t);
+
+		// On lit le dossier pour voir combien de temps ça prend
+		while(readdir(rep)!=NULL)
+		{
+			
+			//printf("Le fichier lu s'appelle '%s'\n", fichierLu->d_name);
+			write_record(record, j++, stop_timer(t));
+
+		}
+
+		/*
 	for(N=1;N<=NOMBREDEFICHIERMAX;N=N+STEPNUMBERFILES)
 	{
 		
@@ -81,8 +111,10 @@ int main(int argc, char *argv[]){
 
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
-			// On n'utilise pas la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
+			// On n'utilise la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
 			create_file(nameFichierFinal, 0);
+			
+			//fprintf(nameFichierFinal, buf, sizeof (buf));
 
 		}
 		// Une fois qu'ils sont créés, on rebobine
@@ -90,16 +122,18 @@ int main(int argc, char *argv[]){
 		start_timer(t);
 
 		// On lit le dossier pour voir combien de temps ça prend
-		while((fichierLu = readdir(rep))!=NULL)
+		while(readdir(rep)!=NULL)
 		{
 			//printf("Le fichier lu s'appelle '%s'\n", fichierLu->d_name);
+			write_record(record)
 		}
 		//j'utilise le record_n parce qu'il faut diviser par le nombre d'de fichier parce que qui est
 		//interessant c'est le temps par fichier
-		write_record_n(record,N,stop_timer(t),1);
+		write_record(record,N,stop_timer(t));
 
 		printf("test fini pour N=%d\n",N);
 	}
+	*/
 
 	// Effacement de tous les fichiers
 	for(i=0;i<NOMBREDEFICHIERMAX;i++)
@@ -117,6 +151,32 @@ int main(int argc, char *argv[]){
 	printf("On commence avec les fichiers remplis \n");
 	char buf[LONGUEURFICHIERALLOUE];
 
+	for(i=1;i<NOMBREDEFICHIERMAX;i++){
+
+			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
+		
+			// On n'utilise la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
+			create_file(nameFichierFinal, LONGUEURFICHIERALLOUE);
+			
+			//fprintf(nameFichierFinal, buf, sizeof (buf));
+		}
+
+		rewinddir(rep);
+		//int j;
+		j= 0;
+		start_timer(t);
+
+		// On lit le dossier pour voir combien de temps ça prend
+		while(readdir(rep)!=NULL)
+		{
+			
+			//printf("Le fichier lu s'appelle '%s'\n", fichierLu->d_name);
+			write_record(record2, j++, stop_timer(t));
+
+		}
+	
+
+		/*
 	for(N=1;N<=NOMBREDEFICHIERMAX;N=N+STEPNUMBERFILES){
 		int i;
 
@@ -135,18 +195,22 @@ int main(int argc, char *argv[]){
 		// On réutilise le pointeur déjà alloué
 		start_timer(t);
 
-		while((fichierLu = readdir(rep))!=NULL)
+		while(readdir(rep)!=NULL)
 		{
 			//printf("Le fichier lu s'appelle '%s'\n", fichierLu->d_name);
+			//write_record(record2,N,stop_timer(t));
+
 		}
 
 		//j'utilise le record_n parce qu'il faut diviser par le nombre d'de fichier parce que qui est
 		//interessant c'est le temps par fichier
-		write_record_n(record2,N,stop_timer(t),1);
+		//write_record(record2,N,stop_timer(t));
+		write_record(record2,N,0);
+
 
 		printf("Test full fini pour N=%d\n",N);
 	}
-
+	*/
 	// Effacement de tous les fichiers
 	for(i=0;i<NOMBREDEFICHIERMAX;i++)
 		{
