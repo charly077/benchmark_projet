@@ -1,0 +1,10 @@
+set title 'Benchmark of readdir'
+set xlabel 'nombre de fichiers'
+set ylabel 'time [ns]'
+set key right bottom
+<<<<<<< HEAD
+
+=======
+>>>>>>> c7021353bf512b3445c63acd777db038d3471383
+plot 'readdir.csv' using 1:2 title 'readdir',\
+   'readdirfull.csv' using 1:2 title 'readdir\_full'
