@@ -20,9 +20,10 @@
 #include "benchmark.h"
 #include "copy.h"
 
-#define NOMBREDEFICHIERMAX 10000
-#define STEPNUMBERFILES 5
-#define LONGUEURFICHIERALLOUE 1500
+
+#define NOMBRE_MAX_FICHIERS 4000
+#define STEP_NUMBER_FILES 2
+#define LONGUEUR_FICHIER_ALLOUE 10000
 
 void chaineCaractere(char* file, int longueur)
 {
@@ -73,11 +74,12 @@ int main(int argc, char *argv[]){
 
 	printf("On commence avec les fichiers vides \n");
 
-	for(N=1;N<=NOMBREDEFICHIERMAX;N=N+STEPNUMBERFILES)
+	for(N=1;N<=NOMBRE_MAX_FICHIERS;N=N+STEP_NUMBER_FILES)
+
 	{
 		
 		// On crée tous les fichiers dans un dossier
-		for(i=N-STEPNUMBERFILES;i<N;i++){
+		for(i=N-STEP_NUMBER_FILES;i<N;i++){
 
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
@@ -102,7 +104,7 @@ int main(int argc, char *argv[]){
 	}
 
 	// Effacement de tous les fichiers
-	for(i=0;i<NOMBREDEFICHIERMAX;i++)
+	for(i=0;i<NOMBRE_MAX_FICHIERS;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
@@ -115,18 +117,19 @@ int main(int argc, char *argv[]){
 	// ----------------------------------------------------------------------------------------------------------
 
 	printf("On commence avec les fichiers remplis \n");
-	char buf[LONGUEURFICHIERALLOUE];
+	char buf[LONGUEUR_FICHIER_ALLOUE];
 
-	for(N=1;N<=NOMBREDEFICHIERMAX;N=N+STEPNUMBERFILES){
+	for(N=1;N<=NOMBRE_MAX_FICHIERS;N=N+STEP_NUMBER_FILES){
+
 		int i;
 
-		// On crée les N fichiers
-		for(i=N-STEPNUMBERFILES;i<N;i++)
+		// On crée les STEP_NUMBER_FILES fichiers supplémentaires nécessaires
+		for(i=N-STEP_NUMBER_FILES;i<N;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
 			// On crée un fichier avec la méthode de copy.c qui le remplit directement -> n'arrive pas à l'importer...
-			create_file(nameFichierFinal, LONGUEURFICHIERALLOUE);
+			create_file(nameFichierFinal, LONGUEUR_FICHIER_ALLOUE);
 
 		}
 
@@ -148,7 +151,8 @@ int main(int argc, char *argv[]){
 	}
 
 	// Effacement de tous les fichiers
-	for(i=0;i<NOMBREDEFICHIERMAX;i++)
+	for(i=0;i<NOMBRE_MAX_FICHIERS;i++)
+
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
