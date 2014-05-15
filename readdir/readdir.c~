@@ -24,7 +24,7 @@
 void rand_str(char *dest, int length) {
     char charset[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     while (length-- > 0) {
-        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+        size_t index = length%(sizeof charset - 1);
         *dest++ = charset[index];
     }
     *dest = '\0';
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
 	//création des variable de calcul benchmark:
 	timer *t = timer_alloc();
 	recorder *record = recorder_alloc("readdir.csv");
-	//recorder *recordTot = recorder_alloc("readdirtot.csv");
+	recorder *record2 = recorder_alloc("readdirfull.csv");
 
 	// !!! Variables à changer
 	int longueurChaineGene = 10000;
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]){
 	printf("On commence avec les fichiers remplis \n");
 
 	//timer *t2 = timer_alloc();
-	recorder *record2 = recorder_alloc("readdirfull.csv");
+	
 	char buf[longueurChaineGene]; // Chaine à placer dans le fichier
 
 	for(N=10;N<=nombreDeFichierMaxCree;N=10*N){
