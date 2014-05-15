@@ -1,0 +1,41 @@
+\documentclass[11pt, oneside]{article} 
+%\usepackage[utf8]{inputenc}
+  	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or epsÂ§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex
+\usepackage{amssymb}
+
+\title{Rapport du projet : Benchmark}
+\author{Charles Jacquet & Stéphane Kimmel}
+%\date{}							% Activate to display a given date or no date
+\begin{document}
+
+\section{Introduction}
+Le but de ce projet-ci était de déterminé la rapidité d'une machine en faisant des appels aux fonctions systèmes en language mais aussi et surtout, comparer le temps d'exécution des différentes fonctions systèmes entre elles.  \\
+En effet, chaque fonction système coute du temps et le but était entre autre de comparer le temps mis par la combinaison de deux fonctions systèmes par rapport à l'appel d'une seule fonction système réalisant la même chose.
+
+\section{Choix d'implementations}
+\subsection{Readdir}
+L'appel de la fonction readdir permet de parcourir / lister le contenu d'un dossier. Nous avons donc décidé de comparer le temps mis par readdir pour lire un dossier contenant un nombre croissants de fichiers ainsi qu'un nombre croissants de fichiers remplis. Nous voulions essayer de savoir si readdir prenait plus de temps lorsque les fichiers contenaient une chaine de caractère quelconque. C'est pourquoi, sur l'image ci-dessous, il y a 2 graphiques. \\
+
+\subsection{Writev comparé à 'write' et 'lseek'}
+Tout d'abord, nous nous sommes renseignés sur les 3 fonctions systèmes afin de comprendre comment combiner lseek et write pour savoir comment faire un appel équivalent avec writev. Ceci fait, nous avons dû trouver un scénario suffisamment intéressant à implémenter. 
+
+\section{Interpretation des résultats}
+\subsection{Readdir}
+Voici le graphique obtenu en sortie après l'exécution du benchmark \\
++ IMAGE
+\\
+Nous pouvons clairement apercevoir une suite de segment de longueur horizontale de 1000 fichiers qui s'élèvent de plus en plus. De plus, nous pouvons remarquer que les espaces verticaux entre ces segments sont équivalent.  
+En effet, après multiples recherches sur internet, cela serait dû au fait que readdir est appellé réellement 1 fois tous les 1000 (25) fichiers et qu'il ne fait que charger les attributs de chaque fichier ensuite avec getattr. Une fois qu'il atteint 1000 appels à getattr, il rappelle readdir. Ceci expliquerait assez bien l'allure du graphe de notre benchmark.
+
+\subsection{Writev}
+
+
+\section{Conclusion}
+Au final, ce projet-ci aura été le plus enrichissant car il s'agissait de comprendre réellement ce qu'il y a derrière les fonctions systèmes elles-mêmes pour comprendre leurs temps d'exécution respectifs. Par contre, ce projet n'aura pas été de tout repos, les premiers problèmes se posant dès la compilation du fork que l'on a fait du git. Pas mal d'autres problèmes de liens sont apparus çar notre projet devait s'intégrer dans un projet déjà conçu. De plus, pour rajouter nos deux fonctions personnelles au benchmark, il aura fallu ouvrir et comprendre la plupart des fichiers du projet donné afin d'en adapter certains. 
+\end{document}  
