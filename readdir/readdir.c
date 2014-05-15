@@ -20,6 +20,9 @@
 #include "benchmark.h"
 #include "copy.h"
 
+#define NOMBREDEFICHIERMAX 10000
+#define STEPNUMBERFILES 2
+#define LONGUEURFICHIERALLOUE 10000
 
 void chaineCaractere(char* file, int longueur)
 {
@@ -37,10 +40,7 @@ void chaineCaractere(char* file, int longueur)
 
 int main(int argc, char *argv[]){
 
-		// !!! Variables à changer
-	int longFichierAlloue = 10000;
 	char* nameDossier = "repertoire";
-	int nombreDeFichierMaxCree = 80000;
 
 	//création du répertoire :
 	if(mkdir("repertoire",S_IRWXU)){ // ! j'ai changé de './repertoire'
@@ -73,11 +73,11 @@ int main(int argc, char *argv[]){
 
 	printf("On commence avec les fichiers vides \n");
 
-	for(N=1;N<=nombreDeFichierMaxCree;N=N+500)
+	for(N=1;N<=NOMBREDEFICHIERMAX;N=N+STEPNUMBERFILES)
 	{
 		
 		// On crée tous les fichiers dans un dossier
-		for(i=N-500;i<N;i++){
+		for(i=N-STEPNUMBERFILES;i<N;i++){
 
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
@@ -96,39 +96,37 @@ int main(int argc, char *argv[]){
 		}
 		//j'utilise le record_n parce qu'il faut diviser par le nombre d'de fichier parce que qui est
 		//interessant c'est le temps par fichier
-		write_record_n(record,N,stop_timer(t),N);
+		write_record_n(record,N,stop_timer(t),1);
 
-		//supression de tous les fichiers créés pour ce nombre de FichierCréé
-		/*
-		for(i=0;i<N;i++){
-
-			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
-			
-			// On supprime les fichiers, avec la fonction fournie dans le 'copy.h' -> n'arrive pas à l'importer...
-			 rm(nameFichierFinal); 	
-		}
-		*/
 		printf("test fini pour N=%d\n",N);
 	}
 
+	// Effacement de tous les fichiers
+	for(i=0;i<NOMBREDEFICHIERMAX;i++)
+		{
+			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
+			
+			// On supprime le fichier avec la méthode de copy.c
+			rm(nameFichierFinal);
+		}
 	
 	printf("Fini les fichiers vides \n");
 
 	// ----------------------------------------------------------------------------------------------------------
 
 	printf("On commence avec les fichiers remplis \n");
-	char buf[longFichierAlloue];
+	char buf[LONGUEURFICHIERALLOUE];
 
-	for(N=1;N<=nombreDeFichierMaxCree;N=N+500){
+	for(N=1;N<=NOMBREDEFICHIERMAX;N=N+STEPNUMBERFILES){
 		int i;
 
 		// On crée les N fichiers
-		for(i=N-500;i<N;i++)
+		for(i=N-STEPNUMBERFILES;i<N;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
 			// On crée un fichier avec la méthode de copy.c qui le remplit directement -> n'arrive pas à l'importer...
-			create_file(nameFichierFinal, longFichierAlloue);
+			create_file(nameFichierFinal, LONGUEURFICHIERALLOUE);
 
 		}
 
@@ -144,23 +142,13 @@ int main(int argc, char *argv[]){
 
 		//j'utilise le record_n parce qu'il faut diviser par le nombre d'de fichier parce que qui est
 		//interessant c'est le temps par fichier
-		write_record_n(record2,N,stop_timer(t),N);
+		write_record_n(record2,N,stop_timer(t),1);
 
-		//supression de tous les fichiers:
-		/*
-		for(i=0;i<N;i++)
-		{
-			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
-			
-			// On supprime le fichier avec la méthode de copy.c -> ne fonctionne pas, n'arrive pas à l'importer...
-			rm(nameFichierFinal);
-		}
-		*/
 		printf("Test full fini pour N=%d\n",N);
 	}
 
 	// Effacement de tous les fichiers
-	for(i=0;i<nombreDeFichierMaxCree;i++)
+	for(i=0;i<NOMBREDEFICHIERMAX;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
