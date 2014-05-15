@@ -160,7 +160,7 @@ int main(int argc, char *argv[]){
 	}
 
 	// Effacement de tous les fichiers
-	for(i=0;i<N;i++)
+	for(i=0;i<nombreDeFichierMaxCree;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
