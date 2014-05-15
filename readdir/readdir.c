@@ -20,6 +20,7 @@
 #include "benchmark.h"
 #include "copy.h"
 
+#define NOMBRE_MAX_FICHIERS 4000
 
 void chaineCaractere(char* file, int longueur)
 {
@@ -40,7 +41,6 @@ int main(int argc, char *argv[]){
 		// !!! Variables à changer
 	int longFichierAlloue = 10000;
 	char* nameDossier = "repertoire";
-	int nombreDeFichierMaxCree = 80000;
 
 	//création du répertoire :
 	if(mkdir("repertoire",S_IRWXU)){ // ! j'ai changé de './repertoire'
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 
 	printf("On commence avec les fichiers vides \n");
 
-	for(N=1;N<=nombreDeFichierMaxCree;N=N+500)
+	for(N=1;N<=NOMBRE_MAX_FICHIERS;N=N+50)
 	{
 		
 		// On crée tous les fichiers dans un dossier
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]){
 	printf("On commence avec les fichiers remplis \n");
 	char buf[longFichierAlloue];
 
-	for(N=1;N<=nombreDeFichierMaxCree;N=N+500){
+	for(N=1;N<=NOMBRE_MAX_FICHIERS;N=N+500){
 		int i;
 
 		// On crée les N fichiers
@@ -160,7 +160,7 @@ int main(int argc, char *argv[]){
 	}
 
 	// Effacement de tous les fichiers
-	for(i=0;i<nombreDeFichierMaxCree;i++)
+	for(i=0;i<NOMBRE_MAX_FICHIERS;i++)
 		{
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
