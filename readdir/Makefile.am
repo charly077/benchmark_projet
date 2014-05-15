@@ -1,4 +1,4 @@
-AM_CFLAGS = -I$(top_srcdir)/lib -BM_USE_CLOCK_GETTIME @AM_CFLAGS@
+AM_CFLAGS = -I$(top_srcdir)/lib @AM_CFLAGS@
 bin_PROGRAMS = readdir
 readdir_SOURCES = readdir.c
 readdir_LDADD = $(top_builddir)/lib/libbenchmark.a \
