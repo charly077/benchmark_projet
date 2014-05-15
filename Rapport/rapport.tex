@@ -1,41 +1,49 @@
 \documentclass[11pt, oneside]{article} 
-%\usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}
   	% use "amsart" instead of "article" for AMSLaTeX format
 \usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
 \geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
 %\geometry{landscape}                		% Activate for for rotated page geometry
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
-\usepackage{graphicx}				% Use pdf, png, jpg, or epsÂ§ with pdflatex; use eps in DVI mode
-								% TeX will automatically convert eps --> pdf in pdflatex
+\usepackage{graphicx}				% Use pdf, png, jpg, or epsÃ‚Â§ 
 \usepackage{amssymb}
+\usepackage{multicol}
+
 
 \title{Rapport du projet : Benchmark}
-\author{Charles Jacquet & Stéphane Kimmel}
-%\date{}							% Activate to display a given date or no date
+\author{Charles Jacquet & StÃ©phane Kimmel}
+
 \begin{document}
+\maketitle
+\begin{multicols}{2}
 
 \section{Introduction}
-Le but de ce projet-ci était de déterminé la rapidité d'une machine en faisant des appels aux fonctions systèmes en language mais aussi et surtout, comparer le temps d'exécution des différentes fonctions systèmes entre elles.  \\
-En effet, chaque fonction système coute du temps et le but était entre autre de comparer le temps mis par la combinaison de deux fonctions systèmes par rapport à l'appel d'une seule fonction système réalisant la même chose.
+Le but de ce projet-ci Ã©tait de dÃ©terminÃ© la rapiditÃ© d'une machine en faisant des appels aux fonctions systÃ¨mes en language mais aussi et surtout, comparer le temps d'exÃ©cution des diffÃ©rentes fonctions systÃ¨mes entre elles.  \\
+En effet, chaque fonction systÃ¨me coute du temps et le but Ã©tait entre autre de comparer le temps mis par la combinaison de deux fonctions systÃ¨mes par rapport Ã  l'appel d'une seule fonction systÃ¨me rÃ©alisant la mÃªme chose.
 
 \section{Choix d'implementations}
 \subsection{Readdir}
-L'appel de la fonction readdir permet de parcourir / lister le contenu d'un dossier. Nous avons donc décidé de comparer le temps mis par readdir pour lire un dossier contenant un nombre croissants de fichiers ainsi qu'un nombre croissants de fichiers remplis. Nous voulions essayer de savoir si readdir prenait plus de temps lorsque les fichiers contenaient une chaine de caractère quelconque. C'est pourquoi, sur l'image ci-dessous, il y a 2 graphiques. \\
+L'appel de la fonction readdir permet de parcourir / lister le contenu d'un dossier. Nous avons donc dÃ©cidÃ© de comparer le temps mis par readdir pour lire un dossier contenant un nombre croissants de fichiers ainsi qu'un nombre croissants de fichiers remplis. Nous voulions essayer de savoir si readdir prenait plus de temps lorsque les fichiers contenaient une chaine de caractÃ¨re quelconque. C'est pourquoi, sur l'image ci-dessous, il y a 2 graphiques. \\
 
-\subsection{Writev comparé à 'write' et 'lseek'}
-Tout d'abord, nous nous sommes renseignés sur les 3 fonctions systèmes afin de comprendre comment combiner lseek et write pour savoir comment faire un appel équivalent avec writev. Ceci fait, nous avons dû trouver un scénario suffisamment intéressant à implémenter. 
+\subsection{Writev comparÃ© Ã  'write' et 'lseek'}
+Tout d'abord, il nous a fallu comprendre Ã  quoi servait la fonction writev. Nous nous sommes donc rendu compte qu'elle permettait d'Ã©crire un ensemble de buffers l'un Ã  la suite des autres. Pour ce faire, il fallait crÃ©er un tableau de structure iov, dont chaque structure possÃ¨de le buffer (iov\_base) et Ã©galement la taille sur laquelle il faut Ã©crire ce buffer (iov\_len). C'est pourquoi nous avons dÃ©cidÃ© de prendre comme sÃ©nario, de stocker des donnÃ©es sur des secteurs. Pour ce faire, nous avons utilisÃ© un mÃªme buffer tout au long par facilitÃ© mais on pourrait imaginer par exemple de laisser assez de place pour stocker des structures ou tout autre chose. De plus comme taille de secteur, ici, nous avons choisi une taille Ã©gale au double de la taille de la chaine de caractÃ¨res.
+Ensuite, il nous suffisait de mesurer le temps grÃ¢ce aux fonctions du benchmark pour exÃ©cuter writev ainsi que fsync pour s'assurer que le temps mesurÃ© contient bien l'Ã©criture du buffer dans le fichier.
+Nous devions aussi faire la mÃªme chose avec write et lseek. Pour ce faire, il nous fallait d'abord, grÃ¢ce Ã  lseek, dÃ©placer l'offset du descripteur de fichier pour le mettre au dÃ©but de la bonne section. Ensuite, on pouvait Ã©crire le buffer grÃ¢ce Ã  write et fsync de nouveau pour s'assurer de l'Ã©criture du buffer.
+Ensuite pour pouvoir bien comparer les deux, nous recommenÃ§ons l'opÃ©ration un certain nombre de fois et Ã  chaque fois on Ã©crit un buffer de plus.
 
-\section{Interpretation des résultats}
+\section{Interpretation des rÃ©sultats}
 \subsection{Readdir}
-Voici le graphique obtenu en sortie après l'exécution du benchmark \\
+Voici le graphique obtenu en sortie aprÃ¨s l'exÃ©cution du benchmark \\
 + IMAGE
 \\
-Nous pouvons clairement apercevoir une suite de segment de longueur horizontale de 1000 fichiers qui s'élèvent de plus en plus. De plus, nous pouvons remarquer que les espaces verticaux entre ces segments sont équivalent.  
-En effet, après multiples recherches sur internet, cela serait dû au fait que readdir est appellé réellement 1 fois tous les 1000 (25) fichiers et qu'il ne fait que charger les attributs de chaque fichier ensuite avec getattr. Une fois qu'il atteint 1000 appels à getattr, il rappelle readdir. Ceci expliquerait assez bien l'allure du graphe de notre benchmark.
+Nous pouvons clairement apercevoir une suite de segment de longueur horizontale de 1000 fichiers qui s'Ã©lÃ¨vent de plus en plus. De plus, nous pouvons remarquer que les espaces verticaux entre ces segments sont Ã©quivalent.  
+En effet, aprÃ¨s multiples recherches sur internet, cela serait dÃ» au fait que readdir est appellÃ© rÃ©ellement 1 fois tous les 1000 (25) fichiers et qu'il ne fait que charger les attributs de chaque fichier ensuite avec getattr. Une fois qu'il atteint 1000 appels Ã  getattr, il rappelle readdir. Ceci expliquerait assez bien l'allure du graphe de notre benchmark.
 
 \subsection{Writev}
+Yohhhhh et Yohhhh ;) !!! :( hcosdhforsudfio :)
 
 
 \section{Conclusion}
-Au final, ce projet-ci aura été le plus enrichissant car il s'agissait de comprendre réellement ce qu'il y a derrière les fonctions systèmes elles-mêmes pour comprendre leurs temps d'exécution respectifs. Par contre, ce projet n'aura pas été de tout repos, les premiers problèmes se posant dès la compilation du fork que l'on a fait du git. Pas mal d'autres problèmes de liens sont apparus çar notre projet devait s'intégrer dans un projet déjà conçu. De plus, pour rajouter nos deux fonctions personnelles au benchmark, il aura fallu ouvrir et comprendre la plupart des fichiers du projet donné afin d'en adapter certains. 
+Au final, ce projet-ci aura Ã©tÃ© le plus enrichissant car il s'agissait de comprendre rÃ©ellement ce qu'il y a derriÃ¨re les fonctions systÃ¨mes elles-mÃªmes pour comprendre leurs temps d'exÃ©cution respectifs. Par contre, ce projet n'aura pas Ã©tÃ© de tout repos, les premiers problÃ¨mes se posant dÃ¨s la compilation du fork que l'on a fait du git. Pas mal d'autres problÃ¨mes de liens sont apparus Ã§ar notre projet devait s'intÃ©grer dans un projet dÃ©jÃ  conÃ§u. De plus, pour rajouter nos deux fonctions personnelles au benchmark, il aura fallu ouvrir et comprendre la plupart des fichiers du projet donnÃ© afin d'en adapter certains. 
+\end{multicols}
 \end{document}  
