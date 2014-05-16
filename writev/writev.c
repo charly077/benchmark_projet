@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 	// boucle pour copier i fois le buffer
 	int i;
 	int j;
-	//int iovcnt;
+	int last=0;
 	for(i=1;i<NOMBRE_BUFFER_MAX;i++){ // il faut commencer à 2 
 		if(lseek(fd1,0,SEEK_SET)==-1)
 			perror("lseek");
@@ -65,6 +65,12 @@ int main(int argc, char *argv[]){
 				perror("fsync");
 		}
 		write_record(write_lseek_rec, i, stop_timer(t));
+		
+		int actual=100*i/NOMBRE_BUFFER_MAX;
+		if (actual%10==0 && last!=actual ){
+			printf("%d%\n",actual);
+			last = actual;
+		}
 	}
 	
 	
