@@ -24,26 +24,12 @@
 #define STEP_NUMBER_FILES 1
 #define LONGUEUR_FICHIER_ALLOUE 10000
 
-void chaineCaractere(char* file, int longueur)
-{
-	  char charset[] = "0123456789"
-                     "abcdefghijklmnopqrstuvwxyz"
-                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      while (longueur-- > 0 )
-      {
-      	size_t index = longueur%(sizeof file - 1);
-        *file++ = charset[index];
-      }
-      *file = '\0';
-
-}
-
 int main(int argc, char *argv[]){
 
 	char* nameDossier = "repertoire";
 
 	//création du répertoire :
-	if(mkdir("repertoire",S_IRWXU)){ // ! j'ai changé de './repertoire'
+	if(mkdir("repertoire",S_IRWXU)){
 		perror("rmdir");
 	}
 
@@ -52,7 +38,7 @@ int main(int argc, char *argv[]){
 	recorder *record = recorder_alloc("readdir.csv");
 	recorder *record2 = recorder_alloc("readdirfull.csv");
 
-	//ouvrir un document 
+	//ouvrir le dossier / répertoire 
 	DIR *rep = NULL;
 	rep = opendir(nameDossier);
 	if(rep == NULL){
@@ -61,26 +47,27 @@ int main(int argc, char *argv[]){
 
 	struct dirent* fichierLu = NULL; 
 	//maintenant qu'on a ouvert le répertoire, il faut créer des fichier
-	//de la même taille
-	//ex pour 10 100 1000 10 000 100 000 fichiers
-	int N;
+	//de la même taille (ici, on va d'abord en créer des vides puis des remplis de LONGUEUR_FICHIER_ALLOUE char)
+
+	// Permet de créer la racine commune aux noms de fichiers
 	char nameFichierFinal[255];
 	char namePrevFichier[255];
 	sprintf((char *) &namePrevFichier, "%s%s",nameDossier,"/fichier");
-	FILE *f;
+	
 	int i;
 	int k;
-	// -----------------------------------------------------------------------------------------
+	int N;
+	// -------------------------------------------------------------------------------------------------------
 
 	printf("On commence avec les fichiers vides \n");
 
 	// On crée tous les fichiers dans un dossier
 	for(i=0;i<NOMBRE_MAX_FICHIERS;i++){
-
+		// On génère le nom de chaque fichier
 		sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
 		// On n'utilise pas la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
-		create_file(nameFichierFinal, 1);
+		create_file(nameFichierFinal, 0);
 
 	}
 
@@ -88,19 +75,22 @@ int main(int argc, char *argv[]){
 
 	// ----------------------------------------------------------------------------------------------------------
 
-
+	// Maintenant qu'on a créé les fichiers, on revient au début du dossier
 	rewinddir(rep);
-	start_timer(t);
+	// On initialise les variables qui représenteront le temps, ceci afin d'être plus exact sur les temps de calculs
 	int a;
 	int b;
 	int tot = 0;
 
+	// On fait une boucle pour que readdir puisse lire de plus en plus de fichiers du dossier
 	for (k = 0; k <= NOMBRE_MAX_FICHIERS; k++)
 	{
+			// On calcule exactement le temps nécessaire
 			a = stop_timer(t);
 			readdir(rep);
 			b = stop_timer(t);
 			tot = tot+(b-a);
+			// qu'on stocke dans le fichier avec la fonction fournie
 			write_record(record, k, tot);
 
 	}
@@ -110,15 +100,16 @@ int main(int argc, char *argv[]){
 
 	// Effacement de tous les fichiers
 	for(i=0;i<NOMBRE_MAX_FICHIERS;i++)
-
 		{
+			// on regénère les différents noms de fichiers
 			sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 			
-			// On supprime le fichier avec la méthode de copy.c -> ne fonctionne pas, n'arrive pas à l'importer...
+			// On supprime le fichier avec la méthode donnée de copy.c .
 			rm(nameFichierFinal);
 		}
 
 	// ----------------------------------------------------------------------------------------------------------
+	// Cette partie est exactement la-même que la précédente à la différence que les fichiers ont une place réservée
 
 	printf("On commence avec les fichiers remplis \n");
 
@@ -127,7 +118,7 @@ int main(int argc, char *argv[]){
 
 		sprintf((char *) &nameFichierFinal, "%s%i.txt",namePrevFichier,i);
 		
-		// On n'utilise pas la fonction de 'copy.h' parce qu'elle remplit les fichiers alors qu'on ne le veut pas forcément
+		// On utilise la fonction de 'copy.h' parce qu'elle permet d'allouer de l'espace aux fichiers
 		create_file(nameFichierFinal, LONGUEUR_FICHIER_ALLOUE);
 
 	}
@@ -135,19 +126,21 @@ int main(int argc, char *argv[]){
 	printf("Fichiers remplis créés \n");
 
 	// ----------------------------------------------------------------------------------------------------------
-
+	// Exactement la même chose que précédemment
 	rewinddir(rep);
 	start_timer(t);
 	a = 0;
 	b = 0;
 	tot = 0;
 
+	// Mesure du temps de readdir pour un nombre croissant de fichiers
 	for (k = 0; k <= NOMBRE_MAX_FICHIERS; k++)
 	{
 			a = stop_timer(t);
 			readdir(rep);
 			b = stop_timer(t);
 			tot = tot+(b-a);
+			// On sauve juste les résultats dans un deuxième
 			write_record(record2, k, tot);
 
 	}
@@ -167,18 +160,19 @@ int main(int argc, char *argv[]){
 
 	// ----------------------------------------------------------------------------------------------------------
 
-
+	// On ferme le répertoire
 	if(closedir(rep) == -1)
 	{
 		return -1; // EXIT_FAILURE
 	}
 
-	//suppression du répertoire (vide):
+	//suppression du répertoire (qui est vide):
 	if(rmdir(nameDossier))
 	{
 		perror("rmdir");
 	}
 
+	// On désalloue les objets de benchmark afin d'éviter tout memory leak
 	recorder_free(record);
 	recorder_free(record2);
 	timer_free(t);
