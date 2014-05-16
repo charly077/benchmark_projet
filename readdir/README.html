@@ -1,20 +1,5 @@
-<p>
-Nous avons utilisé BM_USE_CLOCK_GETTIME parce que celui-ci semble plus précis mais nous devons encore comprendre quelles sont les différences exactes.
-</p>
 <p> 
-Tout d'abord, nous nous sommes demandé si readdir était plus lent si les fichiers étaient
-remplis ou pas. C'est pourquoi nous avons choisi d'implémenter deux tests. Le premier 
-calcul le temps que met readdir pour prendre la structure d'un seul élement lorsqu'il y en a 10, 100, 1000 ... Ensuite le second fait la même chose à la différence que nous remplissons les fichiers pour qu'ils aient une taille de <b>?????????????????</b>byte.
+Pour faire le benchmark de readdir, nous avons décidé de prendre un répertoire, et à chaque itération, on ajoute un fichier supplémentaire dedans avant de calculer le temps que readdir met pour obtenir les informations sur tous les fichiers.
+De plus, nous avons décider de faire 2 fois l'opération, et la deuxième fois, nous la faisons avec des fichiers que nous avons rempli avec 10ko (readdir_full).
 </p>
-<p>
-1) Nous créons un répertoire vide "repertoire".
-</p>
-<p>
-2) Dans une boucle, nous créons N fichiers ensuite nous calculons le temps que readdir met pour tous les lire et nous utilisons la fonction pour diviser par N ce qui nous donne le temps pour un readdir.
-</p>
-<p>
-3) Nous supprimons tous les fichiers.
-</p>
-<p>
-4) Nous refaisons la même chose qu'au point 2 sauf que l'on rempli les fichiers.
-</p>
+
