@@ -1,6 +1,0 @@
-set title 'Benchmark of readdir'
-set xlabel 'nombre de fichiers'
-set ylabel 'time [ns]'
-set key right bottom
-plot 'readdir.csv' using 1:2 title 'readdir',\
-   'readdirfull.csv' using 1:2 title 'readdir\_full'
