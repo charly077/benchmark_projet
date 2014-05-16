@@ -34,19 +34,21 @@ Ensuite pour pouvoir bien comparer les deux, nous recommençons l'opération un 
 \section{Interpretation des résultats}
 \subsection{Readdir}
 Voici le graphique obtenu en sortie après l'exécution du benchmark \\
-+ IMAGE
+\includegraphics[scale=0.35]{readdir.png}
 \\
-Nous pouvons clairement apercevoir une suite de segment de longueur horizontale de 1000 fichiers qui s'élèvent de plus en plus. De plus, nous pouvons remarquer que les espaces verticaux entre ces segments sont équivalent.  
-En effet, après multiples recherches sur internet, cela serait dû au fait que readdir est appellé réellement 1 fois tous les 1000 (25) fichiers et qu'il ne fait que charger les attributs de chaque fichier ensuite avec getattr. Une fois qu'il atteint 1000 appels à getattr, il rappelle readdir. Ceci expliquerait assez bien l'allure du graphe de notre benchmark.
+Nous pouvons clairement apercevoir une suite de segments de longueur horizontale de 125 fichiers qui s'élèvent de plus en plus. 
+De plus, nous pouvons remarquer que les espaces verticaux entre ces segments sont équivalent, que ce soit lorsque les fichiers sont pré-alloués avec une certaine taille ou non. 
+En effet, après multiples recherches sur internet, cela serait dû au fait que readdir est appellé réellement 1 fois tous les 125 (les sources divergent sur ce nombre) fichiers et
+qu'il ne fait que charger les attributs de chaque fichier ensuite avec getattr. Une fois qu'il atteint 125 appels à getattr, il rappelle readdir. Ceci expliquerait assez bien l'allure du graphe de notre benchmark.
 
 \subsection{Writev}
 
 \begin{center}
 
-\includegraphics[scale=0.2]{writev.png}
+%\includegraphics[scale=0.2]{writev.png}
 
 \end{center}
-On peu facilement se rendre compte que writev est beaucoup plus rapide que la combinaison de write et lseek. De plus, nous avons fait les test avec uniquement Writev et write pour pouvoir comparer et il était déjà clair que writev était bien plus rapide. Ensuite nous avions au début oublier de faire un fsync. Lorsque nous l'avons implémenté, nous avons vu une différence énorme pour les deux temps. Nous en avons tiré comme conclusion que ce qui prenait du temps, c'est bien l'appel système d'écriture dans le fichier. Nous émettons donc l'hypothèse que writev, forme un buffer qu'il va ensuite écrire en un minimum de fois pour limiter le nombre d'appel qui prennent vraiment du temps, c'est-à-dire l'appel qui permet d'écrire dans un fichier (qui de plus est un appel bloquant).
+On peut facilement se rendre compte que writev est beaucoup plus rapide que la combinaison de write et lseek. De plus, nous avons fait les test avec uniquement Writev et write pour pouvoir comparer et il était déjà clair que writev était bien plus rapide. Ensuite nous avions au début oublier de faire un fsync. Lorsque nous l'avons implémenté, nous avons vu une différence énorme pour les deux temps. Nous en avons tiré comme conclusion que ce qui prenait du temps, c'est bien l'appel système d'écriture dans le fichier. Nous émettons donc l'hypothèse que writev, forme un buffer qu'il va ensuite écrire en un minimum de fois pour limiter le nombre d'appel qui prennent vraiment du temps, c'est-à-dire l'appel qui permet d'écrire dans un fichier (qui de plus est un appel bloquant).
 
 
 \section{Conclusion}
