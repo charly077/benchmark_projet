@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 		
 		int actual=100*i/NOMBRE_BUFFER_MAX;
 		if (actual%10==0 && last!=actual ){
-			printf("%d/100\n",actual);
+			printf("%d\%\n",actual);
 			last = actual;
 		}
 	}
