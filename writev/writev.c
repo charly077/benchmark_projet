@@ -11,13 +11,13 @@
 
 /*
 
-Le but de se programme est de comparer la vitess de write/lseek par rapport à writev
+Le but de se programme est de comparer la vitesse de write/lseek par rapport à writev
 
 @author Stephane Kimmel & Charles Jacquet
 
 */
 
-#define NOMBRE_BUFFER_MAX 500
+#define NOMBRE_BUFFER_MAX 1000
 
 int main(int argc, char *argv[]){
 	//création d'un buffer de taille fixe à écrire
@@ -38,8 +38,7 @@ int main(int argc, char *argv[]){
 	int j;
 	//int iovcnt;
 	for(i=1;i<NOMBRE_BUFFER_MAX;i++){ // il faut commencer à 2 
-		//writev (écrit à chaque fois au début du fichier)
-		if(lseek(fd2,0,SEEK_SET)==-1)
+		if(lseek(fd1,0,SEEK_SET)==-1)
 			perror("lseek");
 		start_timer(t);
 		struct iovec iov[i];
@@ -52,13 +51,13 @@ int main(int argc, char *argv[]){
 		if(fsync(fd1)) // obliger l'écriture du buffer
 			perror("fsync");
 		write_record(writev_rec, i, stop_timer(t));
-		// write/lseek à chaque fois il faut revenir à 0
 
+		// write/lseek à chaque fois il faut revenir à 0
 		if(lseek(fd2,0,SEEK_SET)==-1)
 			perror("lseek");
 		start_timer(t);
 		for(j=0;j<i;j++){
-			if(lseek(fd2,i*section_len,SEEK_SET)==-1)
+			if(lseek(fd2,j*section_len,SEEK_SET)==-1)
 				perror("lseek");
 			if(write(fd2,buf,buf_len)==-1)
 				perror("write");
@@ -77,6 +76,6 @@ int main(int argc, char *argv[]){
 	//fermeture des fichiers
 	close(fd1);
 	close(fd2);	
-	rm("./writev_fd");
-	rm("./write_lseek_fd");
+	//rm("./writev_fd");
+	//rm("./write_lseek_fd");
 }
